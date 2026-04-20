@@ -1,0 +1,102 @@
+{
+  "name": "osama.wear — Order History Tracker",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "osama-wear-order-track",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-node",
+      "name": "Track Request",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        200,
+        300
+      ],
+      "webhookId": "osama-wear-order-track"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "documentId": {
+          "value": "YOUR_GOOGLE_SHEET_ID_HERE",
+          "__rl": true,
+          "mode": "id"
+        },
+        "sheetName": {
+          "value": "Orders",
+          "__rl": true,
+          "mode": "name"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "key": "customer_phone",
+              "operation": "equal",
+              "value": "={{ $json.body.phone }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "sheets-search",
+      "name": "Search Orders",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $input.all().map(i => i.json) }}"
+      },
+      "id": "respond-node",
+      "name": "Respond with Orders",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        640,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Track Request": {
+      "main": [
+        [
+          {
+            "node": "Search Orders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Orders": {
+      "main": [
+        [
+          {
+            "node": "Respond with Orders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    "osama.wear",
+    "ecommerce",
+    "tracking"
+  ],
+  "pinData": {}
+}

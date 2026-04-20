@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OSAMA WEAR | Premium Streetwear in Jordan</title>
+  <meta name="description"
+    content="OSAMA WEAR — Premium minimal streetwear fashion brand based in Jordan. Discover the latest styles." />
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body>
+
+  <!-- ════ TOAST CONTAINER ════ -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- ════ HEADER ════ -->
+  <header id="header">
+    <a id="logo" href="#" onclick="scrollToTop(); return false;">
+      osama<span>.wear</span>
+    </a>
+    <nav class="nav-actions">
+      <button class="btn-admin" onclick="openOrderHistory()" title="Track Orders">
+        <i class="fa fa-magnifying-glass"></i>&nbsp; Track
+      </button>
+      <button class="btn-admin" id="btn-admin-toggle" onclick="openAdminLogin()" title="Admin Login"
+        aria-label="Admin Login">
+        <i class="fa fa-lock"></i>&nbsp; Admin
+      </button>
+      <button class="btn-icon" onclick="openCart()" title="Shopping Cart" aria-label="Open Cart">
+        <i class="fa fa-bag-shopping"></i>
+        <span id="cart-count" class="cart-count">0</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ════ HERO ════ -->
+  <section id="hero">
+    <div class="hero-content">
+      <div class="hero-badge" id="hero-badge">✦ New Collection 2025</div>
+      <h1 id="hero-title">Wear Your<br />Identity</h1>
+      <p id="hero-desc">Premium fashion crafted for those who dare to stand out. From everyday essentials to statement pieces — find
+        your style.</p>
+      <button class="btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+        <i class="fa fa-sparkles"></i> Shop Now
+      </button>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-number" id="stat-products">0</div>
+          <div class="stat-label">Products</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">Fast</div>
+          <div class="stat-label">Delivery</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Quality</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ TRUST SECTION ════ -->
+  <section id="trust-section">
+    <div class="trust-container">
+      <div class="trust-item">
+        <div class="trust-icon"><i class="fa fa-truck-fast"></i></div>
+        <h4>Fast Delivery</h4>
+        <p>Premium shipping across Jordan.</p>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon"><i class="fa fa-shield-halved"></i></div>
+        <h4>Secure Payment</h4>
+        <p>Pay safely with CliQ or Cash on Delivery.</p>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon"><i class="fa fa-arrow-rotate-left"></i></div>
+        <h4>Easy Returns</h4>
+        <p>Hassle-free 7-day return policy.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ PRODUCTS ════ -->
+  <section id="products">
+    <div class="section-header">
+      <div class="section-tag">✦ Our Collection</div>
+      <h2>Shop the Look</h2>
+      <p>Handpicked styles, made to impress.</p>
+    </div>
+
+    <div id="category-filter">
+      <button class="filter-btn active" onclick="filterProducts('All', this)" id="filter-all">All</button>
+    </div>
+
+    <div id="products-grid">
+      <!-- Rendered by JS -->
+    </div>
+  </section>
+
+  <!-- ════ CONTACT SECTION ════ -->
+  <section id="contact-section"
+    style="padding:60px 2rem; border-top:1px solid var(--border); max-width:1400px; margin:0 auto; display:none;">
+    <div class="section-header" style="margin-bottom:2rem;">
+      <div class="section-tag">✦ Get In Touch</div>
+      <h2>Contact Us</h2>
+    </div>
+    <div id="contact-links" style="display:flex; flex-wrap:wrap; justify-content:center; gap:1rem;">
+      <!-- Rendered by JS -->
+    </div>
+  </section>
+
+  <!-- ════ FOOTER ════ -->
+  <footer id="footer">
+    <div class="footer-brand">osama.wear</div>
+    <p>© <span id="footer-year"></span> osama.wear. All rights reserved. Crafted with ♥</p>
+  </footer>
+
+  <!-- ════════════════════════════════════
+     CART SIDEBAR
+     ════════════════════════════════════ -->
+  <div id="cart-overlay" onclick="closeCart()"></div>
+  <aside id="cart-sidebar" aria-label="Shopping Cart">
+    <div class="cart-header">
+      <div>
+        <h3>Your Cart</h3>
+        <div class="cart-count-label" id="cart-count-label">0 items</div>
+      </div>
+      <button class="btn-close" onclick="closeCart()" aria-label="Close Cart">✕</button>
+    </div>
+    <div id="cart-items">
+      <div class="cart-empty" id="cart-empty">
+        <div class="cart-empty-icon"><i class="fa fa-bag-shopping"></i></div>
+        <p>Your cart is empty.<br />Start shopping above!</p>
+      </div>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-summary">
+        <div class="cart-row"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div>
+        <div class="cart-row cart-total-row"><span>Total</span><span id="cart-total"
+            class="cart-total-price">$0.00</span></div>
+      </div>
+      <button class="btn-primary" id="btn-checkout" onclick="openCheckout()" style="width:100%">
+        <i class="fa fa-credit-card"></i> Checkout
+      </button>
+    </div>
+  </aside>
+
+  <!-- ════════════════════════════════════
+     ORDER HISTORY MODAL
+     ════════════════════════════════════ -->
+  <div class="modal-overlay" id="history-modal" role="dialog" aria-modal="true" aria-labelledby="history-title">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h3 id="history-title">Order History</h3>
+          <p>Enter your phone number to view your orders</p>
+        </div>
+        <button class="btn-close" onclick="closeOrderHistory()" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="history-search-box">
+          <div class="form-group">
+            <div style="display: flex; gap: 0.75rem;">
+              <input class="form-input" id="history-phone" type="tel" placeholder="07XXXXXXXX" maxlength="10" oninput="formatPhone(this)" style="flex:1" />
+              <button class="btn-gold" onclick="searchOrders()" id="btn-search-history">
+                <i class="fa fa-magnifying-glass"></i>&nbsp; Search
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div id="history-results" style="margin-top: 1.5rem; display: none;">
+          <!-- Rendered by JS -->
+        </div>
+
+        <div id="history-empty" style="display:none; text-align:center; padding: 2rem 0; color: var(--gray);">
+          <div style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.5;"><i class="fa fa-box-open"></i></div>
+          <p>No orders found for this email address.</p>
+        </div>
+
+        <div id="history-loading" style="display:none; text-align:center; padding: 2rem 0;">
+          <div class="fa fa-spinner fa-spin" style="font-size: 2rem; color: var(--gold);"></div>
+          <p style="margin-top: 1rem; color: var(--gray);">Searching orders...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+     CHECKOUT MODAL
+     ════════════════════════════════════ -->
+  <div class="modal-overlay" id="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+    <div class="modal" id="checkout-modal-box">
+      <div class="modal-header">
+        <div>
+          <h3 id="checkout-title">Complete Your Order</h3>
+          <p>Fill in your details and we'll deliver to you</p>
+        </div>
+        <button class="btn-close" onclick="closeCheckout()" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body" id="checkout-body">
+        <!-- Order Summary -->
+        <div
+          style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:1.25rem;">
+          <div
+            style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:0.75rem;">
+            Order Summary</div>
+          <div class="order-summary-items" id="checkout-summary-items"></div>
+          <div class="order-summary-total">
+            <span>Total</span>
+            <span id="checkout-total-price">$0.00</span>
+          </div>
+        </div>
+
+        <!-- Customer Form -->
+        <form id="checkout-form" onsubmit="submitOrder(event)" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="cust-name">Full Name *</label>
+              <input class="form-input" id="cust-name" type="text" placeholder="Your name" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cust-email">Email Address *</label>
+              <input class="form-input" id="cust-email" type="email" placeholder="your@email.com" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cust-phone">Phone Number *</label>
+            <input class="form-input" id="cust-phone" type="tel" placeholder="07XXXXXXXX" maxlength="10" oninput="formatPhone(this)" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cust-address">Delivery Address *</label>
+            <textarea class="form-textarea" id="cust-address" placeholder="Street, city, area..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cust-notes">Order Notes (optional)</label>
+            <input class="form-input" id="cust-notes" type="text" placeholder="Size, color preference..." />
+          </div>
+
+          <!-- Payment Method Selector -->
+          <div style="margin-top: 1.5rem;">
+            <div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;color:var(--gray);margin-bottom:0.75rem;">Payment Method</div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; margin-bottom: 1.25rem;">
+              <label class="btn-radio">
+                <input type="radio" name="payment-method" value="cod" checked onchange="updatePaymentMethod('cod')">
+                <span><i class="fa fa-truck"></i> Cash on Delivery</span>
+              </label>
+              <label class="btn-radio">
+                <input type="radio" name="payment-method" value="cliq" onchange="updatePaymentMethod('cliq')">
+                <span><i class="fa fa-mobile-screen"></i> CliQ (Jordan)</span>
+              </label>
+              <label class="btn-radio">
+                <input type="radio" name="payment-method" value="card" onchange="updatePaymentMethod('card')">
+                <span><i class="fa fa-credit-card"></i> Visa / Card</span>
+              </label>
+            </div>
+
+            <!-- Card Info Box (Hidden by default) -->
+            <div id="card-info" style="display: none; background: rgba(201, 169, 110, 0.1); border: 1px dashed var(--gold); border-radius: 8px; padding: 1.25rem;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                <div style="font-weight: 600; color: var(--white);">Visa / Mastercard</div>
+                <div style="display: flex; gap: 0.5rem; font-size: 1.25rem; color: var(--gray);">
+                  <i class="fa-brands fa-cc-visa"></i>
+                  <i class="fa-brands fa-cc-mastercard"></i>
+                </div>
+              </div>
+<p style="font-size: 0.85rem; color: var(--gray); line-height: 1.5; margin-bottom: 0.25rem;">
+  Complete your purchase securely directly on our site using your credit or debit card. No redirect needed.
+</p>
+              <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                <div class="card-input-wrap">
+                  <span id="cc-brand-icon"><i class="fa fa-credit-card"></i></span>
+                  <input type="text" id="cc-number" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCC(this)">
+                </div>
+                <div style="display: flex; gap: 0.75rem;">
+                  <input type="text" class="card-input-sm" id="cc-expiry" placeholder="MM / YY" maxlength="5" oninput="formatExpiry(this)">
+                  <input type="text" class="card-input-sm" id="cc-cvc" placeholder="CVC" maxlength="3" oninput="formatCVC(this)">
+                </div>
+              </div>
+              <div style="font-size: 0.7rem; color: var(--gold); display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+                <i class="fa fa-lock"></i> SSL Encrypted & Secure
+              </div>
+            </div>
+
+            <!-- CliQ Instructions Box -->
+            <div id="cliq-info" style="display: none; background: rgba(201, 169, 110, 0.1); border: 1px dashed var(--gold); border-radius: 8px; padding: 1rem;">
+              <div style="font-weight: 600; color: var(--white); margin-bottom: 0.5rem;">CliQ Instructions:</div>
+              <p style="font-size: 0.85rem; color: var(--gray); margin-bottom: 0.5rem;">Please transfer the total amount to the alias below before placing your order:</p>
+              <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-card); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border);">
+                <span id="cliq-alias" style="font-family: monospace; font-size: 1rem; color: var(--gold); font-weight: bold;">osamawear</span>
+                <button type="button" onclick="copyCliQAlias()" style="background: none; border: none; color: var(--gray); cursor: pointer;" title="Copy Alias">
+                  <i class="fa fa-copy"></i>
+                </button>
+              </div>
+              
+              <!-- Proof of Payment Upload -->
+              <div style="margin-top: 1rem;">
+                <label class="form-label" style="font-size: 0.7rem; color: var(--gray);">Upload Transfer Screenshot (Required)</label>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                  <button type="button" onclick="document.getElementById('cliq-file').click()" class="btn-secondary" style="width: 100%; border-style: dashed; padding: 10px;">
+                    <i class="fa fa-upload"></i>&nbsp; Select Screenshot
+                  </button>
+                  <input type="file" id="cliq-file" accept="image/*" style="display: none;" onchange="handleCliQFile(this)">
+                  
+                  <div id="cliq-preview-container" style="display: none; position: relative; border-radius: 8px; overflow: hidden; border: 1px solid var(--border);">
+                    <img id="cliq-preview" src="" style="width: 100%; display: block; filter: brightness(0.8);">
+                    <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); opacity: 0; transition: 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
+                       <button type="button" onclick="resetCliQFile()" style="background: var(--danger); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">
+                         <i class="fa fa-trash"></i> Remove
+                       </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <p style="font-size: 0.75rem; color: var(--gold); margin-top: 0.75rem;"><i class="fa fa-info-circle"></i> Place order after uploading the receipt.</p>
+            </div>
+          </div>
+
+          <div class="modal-footer" style="border:none;padding:0;margin-top:1.5rem;justify-content:center;">
+            <button type="button" class="btn-secondary" onclick="closeCheckout()">Cancel</button>
+            <button type="submit" class="btn-gold" id="btn-place-order">
+              <i class="fa fa-check"></i>&nbsp; Place Order
+            </button>
+          </div>
+        </form>
+
+        <!-- Success State (hidden) -->
+        <div class="success-state" id="checkout-success" style="display:none;">
+          <div class="success-icon">🎉</div>
+          <h3>Order Placed!</h3>
+          <p>Thank you for shopping with <strong>osama.wear</strong>!<br />
+            Your order has been received and we'll be in touch shortly.</p>
+          <button class="btn-gold" style="margin-top:1.5rem;" onclick="closeCheckout()">Continue Shopping</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+     ADMIN LOGIN MODAL
+     ════════════════════════════════════ -->
+  <div class="modal-overlay" id="admin-login-modal" role="dialog" aria-modal="true" aria-labelledby="admin-login-title">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h3 id="admin-login-title">Admin Login</h3>
+          <p>Access the store management panel</p>
+        </div>
+        <button class="btn-close" onclick="closeAdminLogin()" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="admin-login-form" onsubmit="doAdminLogin(event)">
+          <div class="form-group">
+            <label class="form-label" for="admin-email">Email</label>
+            <input class="form-input" id="admin-email" type="email" placeholder="admin@example.com" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="admin-pass">Password</label>
+            <input class="form-input" id="admin-pass" type="password" placeholder="••••••••" required />
+          </div>
+          <div id="admin-login-error" style="color:#c0392b;font-size:0.83rem;margin-bottom:0.75rem;display:none;">
+            Invalid credentials. Please try again.
+          </div>
+          <div class="modal-footer" style="border:none;padding:0;margin-top:0.5rem;">
+            <button type="button" class="btn-secondary" onclick="closeAdminLogin()">Cancel</button>
+            <button type="submit" class="btn-gold"><i class="fa fa-unlock"></i>&nbsp; Login</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+     PRODUCT MODAL (Add / Edit)
+     ════════════════════════════════════ -->
+  <div class="modal-overlay" id="product-modal" role="dialog" aria-modal="true" aria-labelledby="product-modal-title">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h3 id="product-modal-title">Add Product</h3>
+          <p id="product-modal-sub">Fill in the product details</p>
+        </div>
+        <button class="btn-close" onclick="closeProductModal()" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="product-form" onsubmit="saveProduct(event)">
+          <input type="hidden" id="product-id" />
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="product-name">Product Name *</label>
+              <input class="form-input" id="product-name" type="text" placeholder="e.g. Classic Tee" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="product-category">Category *</label>
+              <input class="form-input" id="product-category" type="text" placeholder="e.g. Shirts" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="product-price">Price ($) *</label>
+              <input class="form-input" id="product-price" type="number" min="0" step="0.01" placeholder="0.00"
+                required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="product-image">Image URL</label>
+              <input class="form-input" id="product-image" type="url" placeholder="https://unsplash.com/..." />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="product-desc">Description</label>
+            <textarea class="form-textarea" id="product-desc" placeholder="Short product description..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="product-badge">Badge Label (optional)</label>
+            <input class="form-input" id="product-badge" type="text" placeholder="e.g. New, Sale, Hot" />
+          </div>
+          <div class="modal-footer" style="border:none;padding:0;margin-top:0.5rem;">
+            <button type="button" class="btn-secondary" onclick="closeProductModal()">Cancel</button>
+            <button type="submit" class="btn-gold"><i class="fa fa-floppy-disk"></i>&nbsp; Save Product</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+     ADMIN PANEL (full-page overlay)
+     ════════════════════════════════════ -->
+  <div id="admin-panel" role="dialog" aria-modal="true" aria-label="Admin Panel">
+    <div class="admin-container">
+
+      <div class="admin-header-bar">
+        <div>
+          <h2>Admin Dashboard</h2>
+          <p id="admin-welcome-text">Welcome back, admin</p>
+        </div>
+        <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;">
+          <div class="admin-tabs">
+            <button class="admin-tab active" onclick="switchAdminTab('dashboard', this)" id="tab-dashboard">📊
+              Dashboard</button>
+            <button class="admin-tab" onclick="switchAdminTab('hero', this)" id="tab-hero">✨ Hero</button>
+            <button class="admin-tab" onclick="switchAdminTab('products', this)" id="tab-products">👕 Products</button>
+            <button class="admin-tab" onclick="switchAdminTab('contact', this)" id="tab-contact">📱 Contact</button>
+            <button class="admin-tab" onclick="switchAdminTab('admins', this)" id="tab-admins">🔑 Admins</button>
+          </div>
+          <button class="btn-danger" onclick="adminLogout()" style="padding:8px 18px;font-size:0.8rem;">
+            <i class="fa fa-right-from-bracket"></i>&nbsp; Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- ── TAB: Dashboard ── -->
+      <div class="admin-tab-content active" id="tab-content-dashboard">
+        <div class="admin-stats">
+          <div class="admin-stat-card">
+            <div class="admin-stat-icon">📦</div>
+            <div class="admin-stat-number" id="stat-total-products">0</div>
+            <div class="admin-stat-label">Total Products</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-icon">🛒</div>
+            <div class="admin-stat-number" id="stat-today-orders">—</div>
+            <div class="admin-stat-label">Orders Today</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-icon">💰</div>
+            <div class="admin-stat-number" id="stat-today-profit">—</div>
+            <div class="admin-stat-label">Today's Profit</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-icon">🔑</div>
+            <div class="admin-stat-number" id="stat-admin-count">1</div>
+            <div class="admin-stat-label">Admins</div>
+          </div>
+        </div>
+
+        <div
+          style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;">
+          <h3 style="font-family:'Playfair Display',serif;margin-bottom:0.75rem;font-size:1.2rem;">Quick Actions</h3>
+          <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+            <button class="btn-gold"
+              onclick="switchAdminTab('products',document.getElementById('tab-products'));openProductModal()">
+              <i class="fa fa-plus"></i>&nbsp; Add Product
+            </button>
+            <button class="btn-secondary" onclick="switchAdminTab('contact',document.getElementById('tab-contact'))">
+              <i class="fa fa-phone"></i>&nbsp; Edit Contact Info
+            </button>
+            <button class="btn-secondary" onclick="switchAdminTab('admins',document.getElementById('tab-admins'))">
+              <i class="fa fa-user-plus"></i>&nbsp; Manage Admins
+            </button>
+          </div>
+        </div>
+
+        <div
+          style="margin-top:1.5rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+            <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;">Daily Stats (from Google Sheets)</h3>
+            <button class="btn-secondary" style="font-size:0.78rem;padding:6px 14px;" onclick="loadDailyStats()">
+              <i class="fa fa-rotate"></i>&nbsp; Refresh
+            </button>
+          </div>
+          <p style="color:var(--gray);font-size:0.85rem;" id="stats-info-text">
+            Stats are pulled from your Google Sheets via n8n. Click Refresh after setting up the n8n workflow.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── TAB: Hero ── -->
+      <div class="admin-tab-content" id="tab-content-hero">
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;">
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:0.5rem;">Hero Section</h3>
+          <p style="color:var(--gray);font-size:0.85rem;margin-bottom:1.5rem;">Edit the main headline and subtitle of your website.</p>
+          
+          <div class="form-group">
+            <label class="form-label">Hero Badge (Text at the very top)</label>
+            <input class="form-input" id="hero-badge-input" type="text" placeholder="e.g. ✦ New Collection 2025" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hero Title (Main headline)</label>
+            <textarea class="form-textarea" id="hero-title-input" placeholder="Use <br /> for new lines"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hero Description (Subtext)</label>
+            <textarea class="form-textarea" id="hero-desc-input" placeholder="Tell your story..."></textarea>
+          </div>
+          
+          <button class="btn-gold" onclick="saveHeroData()">
+            <i class="fa fa-floppy-disk"></i>&nbsp; Save Hero Changes
+          </button>
+        </div>
+      </div>
+      
+      <!-- ── TAB: Products ── -->
+      <div class="admin-tab-content" id="tab-content-products">
+        <div class="admin-toolbar">
+          <button class="btn-gold" onclick="openProductModal()" id="btn-add-product">
+            <i class="fa fa-plus"></i>&nbsp; Add Product
+          </button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="admin-products-table">
+            <thead>
+              <tr>
+                <th>Icon</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Description</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-products-tbody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── TAB: Contact Methods ── -->
+      <div class="admin-tab-content" id="tab-content-contact">
+        <div
+          style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;">
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:0.5rem;">Contact Methods</h3>
+          <p style="color:var(--gray);font-size:0.85rem;margin-bottom:1.5rem;">Set your store's contact info. These
+            appear in the Contact section of your website.</p>
+
+          <div class="form-group">
+            <label class="form-label"><i class="fa-brands fa-instagram" style="color:#e1306c"></i>&nbsp; Instagram
+              Handle</label>
+            <input class="form-input" id="contact-instagram" type="text" placeholder="@yourhandle" />
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fa-brands fa-whatsapp" style="color:#25d366"></i>&nbsp; WhatsApp
+              Number</label>
+            <input class="form-input" id="contact-whatsapp" type="text" placeholder="+1234567890" />
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fa fa-phone" style="color:var(--gold)"></i>&nbsp; Phone Number</label>
+            <input class="form-input" id="contact-phone" type="text" placeholder="+1234567890" />
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fa fa-envelope" style="color:var(--gold)"></i>&nbsp; Email
+              Address</label>
+            <input class="form-input" id="contact-email" type="email" placeholder="contact@example.com" />
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fa-brands fa-facebook" style="color:#1877f2"></i>&nbsp; Facebook
+              URL</label>
+            <input class="form-input" id="contact-facebook" type="text" placeholder="https://facebook.com/yourpage" />
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fa-brands fa-tiktok" style="color:var(--white)"></i>&nbsp; TikTok
+              Handle</label>
+            <input class="form-input" id="contact-tiktok" type="text" placeholder="@yourhandle" />
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fa fa-globe" style="color:var(--gold)"></i>&nbsp; Website / Other
+              Link</label>
+            <input class="form-input" id="contact-website" type="text" placeholder="https://..." />
+          </div>
+          <button class="btn-gold" onclick="saveContactInfo()">
+            <i class="fa fa-floppy-disk"></i>&nbsp; Save Contact Info
+          </button>
+        </div>
+      </div>
+
+      <!-- ── TAB: Admins ── -->
+      <div class="admin-tab-content" id="tab-content-admins">
+        <div
+          style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;">
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:0.5rem;">Add New Admin</h3>
+          <p style="color:var(--gray);font-size:0.85rem;margin-bottom:1.25rem;">Grant another person admin access by
+            adding their email and a password.</p>
+          <form id="add-admin-form" onsubmit="addAdmin(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="new-admin-email">Email</label>
+                <input class="form-input" id="new-admin-email" type="email" placeholder="admin@example.com" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="new-admin-pass">Password</label>
+                <input class="form-input" id="new-admin-pass" type="password" placeholder="Choose a password"
+                  required />
+              </div>
+            </div>
+            <button type="submit" class="btn-gold">
+              <i class="fa fa-user-plus"></i>&nbsp; Add Admin
+            </button>
+          </form>
+        </div>
+
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:1rem;">Current Admins</h3>
+        <div class="admins-list" id="admins-list">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

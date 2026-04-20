@@ -1,0 +1,162 @@
+{
+  "name": "osama.wear — Order to Google Sheets (with Email)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "osama-wear-order",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-node",
+      "name": "Receive Order",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "osama-wear-order"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Summarize multiple items into ONE row\nconst body = $input.first().json.body;\nconst items = body.items || [];\n\n// Create a clean summary string for the spreadsheet\nconst productSummary = items.map(i => `${i.product_name} (x${i.quantity})`).join(', ');\nconst totalQty = items.reduce((sum, i) => sum + i.quantity, 0);\n\nreturn {\n  json: {\n    order_date:       body.order_date || new Date().toISOString().split('T')[0],\n    customer_name:    body.customer_name,\n    customer_email:   body.customer_email || '—',\n    customer_phone:   body.customer_phone,\n    delivery_address: body.delivery_address,\n    product_name:     productSummary, // Matches header H\n    quantity:         totalQty,       // Matches header I\n    unit_price:       '—',            // Matches header J\n    total_price:      body.grand_total, // Matches header K\n    grand_total:      body.grand_total, // Matches header L\n    notes:            body.notes || '', // Matches header M\n    items:            items\n  }\n};"
+      },
+      "id": "code-flatten",
+      "name": "Flatten Items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "value": "YOUR_GOOGLE_SHEET_ID_HERE",
+          "__rl": true,
+          "mode": "id"
+        },
+        "sheetName": {
+          "value": "Orders",
+          "__rl": true,
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "order_date": "={{ $json.order_date }}",
+            "customer_name": "={{ $json.customer_name }}",
+            "customer_email": "={{ $json.customer_email }}",
+            "customer_phone": "={{ $json.customer_phone }}",
+            "delivery_address": "={{ $json.delivery_address }}",
+            "product_name": "={{ $json.product_name }}",
+            "quantity": "={{ $json.quantity }}",
+            "unit_price": "—",
+            "total_price": "={{ $json.total_price }}",
+            "grand_total": "={{ $json.grand_total }}",
+            "notes": "={{ $json.notes }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "google-sheets-node",
+      "name": "Save to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "nazalosama45@gmail.com",
+        "subject": "=🛍 New Order — {{ $json.customer_name }}",
+        "emailType": "html",
+        "message": "=<html><body style=\"font-family:sans-serif;background:#f5f5f5;padding:20px;\"><div style=\"max-width:600px;margin:auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);\"><div style=\"background:#0f0f0f;padding:24px;text-align:center;\"><h1 style=\"color:#c9a96e;font-family:Georgia,serif;margin:0;\">osama.wear</h1><p style=\"color:#8a8a8a;margin:8px 0 0;\">New Order Received</p></div><div style=\"padding:24px;\"><h2 style=\"color:#0f0f0f;margin-top:0;\">Order Summary</h2><table style=\"width:100%;border-collapse:collapse;\"><tr style=\"background:#f9f9f9;\"><th style=\"padding:10px;text-align:left;border-bottom:2px solid #eee;\">Product</th><th style=\"padding:10px;text-align:center;\">Qty</th><th style=\"padding:10px;text-align:right;\">Price</th></tr>{{ $json.items.map(i => `<tr><td style=\"padding:10px;border-bottom:1px solid #eee;\">${i.product_name}</td><td style=\"padding:10px;text-align:center;border-bottom:1px solid #eee;\">${i.quantity}</td><td style=\"padding:10px;text-align:right;border-bottom:1px solid #eee;\">$${i.total_price}</td></tr>`).join('') }}<tr style=\"font-weight:bold;background:#f9f9f9;\"><td colspan=\"2\" style=\"padding:12px;\">Grand Total</td><td style=\"padding:12px;text-align:right;color:#c9a96e;\">${{ $json.grand_total }}</td></tr></table><hr style=\"border:none;border-top:1px solid #eee;margin:20px 0;\"/><h3 style=\"margin:0 0 12px;\">Customer Details</h3><p><strong>Name:</strong> {{ $json.customer_name }}</p><p><strong>Phone:</strong> {{ $json.customer_phone }}</p><p><strong>Address:</strong> {{ $json.delivery_address }}</p><p><strong>Notes:</strong> {{ $json.notes || 'None' }}</p><p><strong>Date:</strong> {{ $json.order_date }}</p></div><div style=\"background:#0f0f0f;padding:16px;text-align:center;\"><p style=\"color:#8a8a8a;font-size:12px;margin:0;\">osama.wear Admin Notification</p></div></div></body></html>",
+        "options": {}
+      },
+      "id": "gmail-node",
+      "name": "Email Admin",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"status\": \"ok\", \"message\": \"Order received\" }"
+      },
+      "id": "response-node",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Receive Order": {
+      "main": [
+        [
+          {
+            "node": "Flatten Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Flatten Items": {
+      "main": [
+        [
+          {
+            "node": "Save to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Email Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Admin": {
+      "main": [
+        [
+          {
+            "node": "Respond OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    "osama.wear",
+    "ecommerce",
+    "orders",
+    "with-email"
+  ],
+  "pinData": {}
+}
